@@ -1,0 +1,9 @@
+{
+	"name": "tftlcd",
+	"authors": [
+		"Szabo Bogdan"
+	],
+	"description": "A D library that gives access to LCD trough RaspberyPi GPIO",
+	"copyright": "Copyright © 2016, Szabo Bogdan",
+	"license": "MIT"
+}

@@ -1,0 +1,3 @@
+[submodule "gpio-raspberry"]
+	path = gpio-raspberry
+	url = https://github.com/gedaiu/gpio-raspberry.git
