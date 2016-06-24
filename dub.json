@@ -5,5 +5,11 @@
 	],
 	"description": "A D library that gives access to LCD trough RaspberyPi GPIO",
 	"copyright": "Copyright © 2016, Szabo Bogdan",
-	"license": "MIT"
+	"license": "MIT",
+
+	"dependencies": {
+		"gpio-raspberry": {
+			"path": "gpio-raspberry"
+		}
+	},
 }
