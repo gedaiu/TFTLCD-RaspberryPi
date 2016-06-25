@@ -50,12 +50,31 @@ struct TFTLCD
 	GPIOPin writePin;
 	GPIOPin commandDataPin;
 	GPIOPin chipSelectPin;
+	GPIOPin resetPin;
 
 	int width;
 	int height;
 
 	void begin(int width, int height)
 	{
+		//reset
+		chipSelectPin.value = true;
+		writePin.value = true;
+		readPin.value = true;
+
+		resetPin.value = false;
+		Thread.sleep(2.msecs);
+		resetPin.value = true;
+
+		chipSelectPin.value = false;
+		commandDataPin.value = false;
+		write(0x00);
+		write(0x00);
+		write(0x00);
+
+		chipSelectPin.value = true;
+
+		//begin
 		chipSelectPin.value = false;
 
 		writeRegister(Registers.softReset, 0);
@@ -64,8 +83,8 @@ struct TFTLCD
 
 		writeRegister(Registers.powerControl1, 0x23);
 		writeRegister(Registers.powerControl2, 0x10);
-		writeRegister16(Registers.vComControl1, 0x2B2B);
-		writeRegister(Registers.vComControl2, 0xC0);
+		writeRegister16(Registers.vComControl1, 0x3E28);
+		writeRegister(Registers.vComControl2, 0x86);
 		writeRegister(Registers.memmoryControl, Registers.madControlMY | Registers.madControlBGR);
 		writeRegister(Registers.pixelFormat, 0x55);
 		writeRegister16(Registers.frameControl, 0x001B);
@@ -74,7 +93,7 @@ struct TFTLCD
 		writeRegister(Registers.sleepOut, 0);
 
 		Thread.sleep(150.msecs);
-		writeRegister(Registers.displayOff, 0);
+		writeRegister(Registers.displayOn, 0);
 
 		Thread.sleep(500.msecs);
 		setAddrWindow(0, 0, width - 1, height - 1);
@@ -82,6 +101,8 @@ struct TFTLCD
 		this.width = width;
 		this.height = height;
 	}
+
+
 
 	void fillScreen(ushort color)
 	{
@@ -94,11 +115,36 @@ struct TFTLCD
 		immutable ubyte hi = cast(ubyte)(color >> 8), lo = cast(ubyte) color;
 
 		chipSelectPin.value = false;
-
 		commandDataPin.value = true;
-		writeRegister(Registers.memmoryWrite, 0);
 
-		foreach (i; 0 .. len)
+		write(Registers.memmoryWrite);
+
+		commandDataPin.value = false;
+
+		// Write first pixel normally, decrement counter by 1
+		write(hi);
+		write(lo);
+		len--;
+
+		auto blocks = len / 64; // 64 pixels/block
+
+		while (blocks--)
+		{
+			auto i = 16; // 64 pixels/block / 4 pixels/pass
+			do
+			{
+				write(hi);
+				write(lo);
+				write(hi);
+				write(lo);
+				write(hi);
+				write(lo);
+				write(hi);
+				write(lo);
+			}
+			while (--i);
+		}
+		for (i = len & 63; i--;)
 		{
 			write(hi);
 			write(lo);

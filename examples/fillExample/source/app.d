@@ -8,7 +8,8 @@ void main() {
                     GPIOPin(2),
                     GPIOPin(3),
                     GPIOPin(4),
-                    GPIOPin(17));
+                    GPIOPin(17),
+                    GPIOPin(12));
 
   tft.begin(240, 320);
 
