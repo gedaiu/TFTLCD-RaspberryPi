@@ -127,10 +127,11 @@ struct TFTLCD
 		len--;
 
 		auto blocks = len / 64; // 64 pixels/block
+		auto i = 0;
 
 		while (blocks--)
 		{
-			auto i = 16; // 64 pixels/block / 4 pixels/pass
+			i = 16; // 64 pixels/block / 4 pixels/pass
 			do
 			{
 				write(hi);
