@@ -1,0 +1,11 @@
+{
+	"name": "fill-example",
+	"description": "An example project with fill screen",
+	"copyright": "Copyright © 2016, Szabo Bogdan",
+	"authors": [
+		"Szabo Bogdan"
+	],
+	"dependencies": {
+		"tftlcd": { "path": "../../" },
+	}
+}
