@@ -4,11 +4,11 @@ import gpio.pinbyte;
 import std.stdio;
 
 void main() {
-  auto tft = TFTLCD(GPIOPinByte([8, 9, 2, 3, 4, 5, 6, 7]),
-                    GPIOPin(10),
-                    GPIOPin(11),
-                    GPIOPin(12),
-                    GPIOPin(13));
+  auto tft = TFTLCD(GPIOPinByte([5, 6, 13, 19, 26, 21, 20, 16]),
+                    GPIOPin(2),
+                    GPIOPin(3),
+                    GPIOPin(4),
+                    GPIOPin(17));
 
   tft.begin(240, 320);
 
