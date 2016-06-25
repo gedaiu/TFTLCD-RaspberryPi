@@ -73,6 +73,7 @@ struct TFTLCD
 		write(0x00);
 
 		chipSelectPin.value = true;
+		Thread.sleep(200.msecs);
 
 		//begin
 		chipSelectPin.value = false;
@@ -101,8 +102,6 @@ struct TFTLCD
 		this.width = width;
 		this.height = height;
 	}
-
-
 
 	void fillScreen(ushort color)
 	{
@@ -201,8 +200,12 @@ struct TFTLCD
 	{
 		ubyte hi, lo;
 
+		hi = cast(ubyte)(command >> 8);
+		lo = cast(ubyte) command;
+
 		commandDataPin.value = false;
-		write(command);
+		write(hi);
+		write(lo);
 
 		hi = cast(ubyte)(value >> 8);
 		lo = cast(ubyte) value;
@@ -213,7 +216,7 @@ struct TFTLCD
 
 	void writeRegister32(ubyte command, int value)
 	{
-		ubyte hi, lo;
+		chipSelectPin.value = false;
 
 		commandDataPin.value = false;
 		write(command);
@@ -223,6 +226,8 @@ struct TFTLCD
 		write(cast(ubyte)(value >> 16));
 		write(cast(ubyte)(value >> 8));
 		write(cast(ubyte) value);
+
+		chipSelectPin.value = true;
 	}
 }
 
