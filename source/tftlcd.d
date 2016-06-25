@@ -178,6 +178,11 @@ struct TFTLCD
 		writePin.value = true;
 	}
 
+	void writeStrobe() {
+		writePin.value = false;
+		writePin.value = true;
+	}
+
 	ubyte read()
 	{
 		readPin.value = false;
