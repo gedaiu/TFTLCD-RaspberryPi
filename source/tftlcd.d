@@ -56,6 +56,9 @@ struct TFTLCD
 	int height;
 
 	void hardReset() {
+		writePin.value = true;
+		readPin.value = true;
+		chipSelectPin.value = false;
 		resetPin.value = false;
 		log("reset");
 		Thread.sleep(120.msecs);
