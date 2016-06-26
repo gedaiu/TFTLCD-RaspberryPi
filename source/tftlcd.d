@@ -5,6 +5,7 @@ import gpio.pinbyte;
 import core.thread;
 import std.stdio;
 import std.datetime;
+import std.conv;
 
 //ILI9341
 
