@@ -166,7 +166,7 @@ struct TFTLCD
 
 	void flood(ushort color, int len)
 	{
-		immutable ubyte hi = cast(ubyte)(color >> 8), lo = cast(ubyte) color;
+		/*immutable ubyte hi = cast(ubyte)(color >> 8), lo = cast(ubyte) color;
 
 		commandDataPin.value = true;
 
@@ -202,6 +202,17 @@ struct TFTLCD
 		{
 			write(hi);
 			write(lo);
+		}*/
+
+		tft_command_write(0x2C);
+
+		for(int y=0;y < width ;y++){
+			for(int x=0;x < height ;x++){
+				auto t = color;
+
+				tft_data_write(cast(ubyte) (t << 8));
+				tft_data_write(cast(ubyte) t);
+			}
 		}
 	}
 
@@ -209,7 +220,7 @@ struct TFTLCD
 	{
 		uint value;
 
-		value = x1;
+		/*value = x1;
 		value <<= 16;
 		value |= x2;
 		writeRegister32(Registers.columnAddressSet, value);
@@ -217,7 +228,24 @@ struct TFTLCD
 		value = y1;
 		value <<= 16;
 		value |= y2;
-		writeRegister32(Registers.pageAddressSet, value);
+		writeRegister32(Registers.pageAddressSet, value);*/
+
+		tft_command_write(0x2A);
+
+		tft_data_write(cast(ubyte) (x1 >> 8));
+		tft_data_write(cast(ubyte) x1);
+
+		tft_data_write(cast(ubyte) (x2 >> 8));
+		tft_data_write(cast(ubyte) x2);
+
+
+		tft_command_write(0x2B);
+
+		tft_data_write(cast(ubyte) (y1 >> 8));
+		tft_data_write(cast(ubyte) y1);
+
+		tft_data_write(cast(ubyte) (y2 >> 8));
+		tft_data_write(cast(ubyte) y2);
 	}
 
 	void write(ubyte value)
