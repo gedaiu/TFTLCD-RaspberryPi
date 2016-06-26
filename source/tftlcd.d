@@ -259,10 +259,8 @@ struct TFTLCD
 		log("write data pins");
 		writePin.value = false;
 		log("write pin");
-		log;
 		writePin.value = true;
 		log("write pin");
-		log;
 	}
 
 	ubyte read()
