@@ -82,6 +82,8 @@ struct TFTLCD
 
 		writePin.value = false;
 		writePin.value = true;
+
+		Thread.sleep(200.msecs);
 	}
 
 	void begin(int width, int height)
