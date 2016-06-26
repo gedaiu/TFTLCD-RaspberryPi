@@ -57,8 +57,11 @@ struct TFTLCD
 
 	void hardReset() {
 		resetPin.value = false;
+		log("reset");
 		Thread.sleep(120.msecs);
 		resetPin.value = true;
+
+		log("reset");
 		Thread.sleep(120.msecs);
 	}
 
@@ -66,6 +69,8 @@ struct TFTLCD
 	{
 
 		Thread.sleep(200.msecs);
+
+		hardReset;
 
 		//begin
 /*
@@ -232,32 +237,32 @@ struct TFTLCD
 
 		tft_command_write(0x2A);
 
-		tft_data_write(cast(ubyte) (x1 >> 8));
+		tft_data_write(cast(ubyte) x1 >> 8);
 		tft_data_write(cast(ubyte) x1);
 
-		tft_data_write(cast(ubyte) (x2 >> 8));
+		tft_data_write(cast(ubyte) x2 >> 8);
 		tft_data_write(cast(ubyte) x2);
 
 
 		tft_command_write(0x2B);
 
-		tft_data_write(cast(ubyte) (y1 >> 8));
+		tft_data_write(cast(ubyte) y1 >> 8);
 		tft_data_write(cast(ubyte) y1);
 
-		tft_data_write(cast(ubyte) (y2 >> 8));
+		tft_data_write(cast(ubyte)  (y2 >> 8));
 		tft_data_write(cast(ubyte) y2);
 	}
 
 	void write(ubyte value)
 	{
 		dataPins.value = value;
+		log("write data pins");
 		writePin.value = false;
+		log("write pin");
+		log;
 		writePin.value = true;
-	}
-
-	void writeStrobe() {
-		writePin.value = false;
-		writePin.value = true;
+		log("write pin");
+		log;
 	}
 
 	ubyte read()
@@ -272,15 +277,17 @@ struct TFTLCD
 
 	void tft_command_write(ubyte command) {
 		commandDataPin.value = false;
+		log("tft_command_write");
     write(command);
 	}
 
 	void tft_data_write(ubyte data)
 	{
 	    commandDataPin.value = true;
+			log("tft_data_write");
 	    write(data);
 	}
-
+/*
 	void writeRegister(ubyte command)
 	{
 		commandDataPin.value = false;
@@ -323,6 +330,30 @@ struct TFTLCD
 		write(cast(ubyte)(value >> 16));
 		write(cast(ubyte)(value >> 8));
 		write(cast(ubyte) value);
+	}
+*/
+	void log(string msg = "?") {
+		std.stdio.write("RD ");
+		readPin.log;
+
+		std.stdio.write("WR ");
+		writePin.log;
+
+		std.stdio.write("CD ");
+		commandDataPin.log;
+
+		std.stdio.write("CS ");
+		chipSelectPin.log;
+
+		std.stdio.write("RST ");
+		resetPin.log;
+
+		std.stdio.write("DATA ");
+		dataPins.log;
+
+		std.stdio.write(" : ", msg);
+
+		std.stdio.writeln;
 	}
 }
 
