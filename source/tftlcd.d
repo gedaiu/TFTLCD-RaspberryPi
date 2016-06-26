@@ -278,7 +278,7 @@ struct TFTLCD
 
 	void tft_command_write(ubyte command) {
 		commandDataPin.value = false;
-		log("tft_command_write");
+		log("tft_command_write ", command);
     write(command);
 	}
 
