@@ -334,19 +334,19 @@ struct TFTLCD
 		std.stdio.write("RD ");
 		readPin.log;
 
-		std.stdio.write("WR ");
+		std.stdio.write(" WR ");
 		writePin.log;
 
-		std.stdio.write("CD ");
+		std.stdio.write(" CD ");
 		commandDataPin.log;
 
-		std.stdio.write("CS ");
+		std.stdio.write(" CS ");
 		chipSelectPin.log;
 
-		std.stdio.write("RST ");
+		std.stdio.write(" RST ");
 		resetPin.log;
 
-		std.stdio.write("DATA ");
+		std.stdio.write(" DATA ");
 		dataPins.log;
 
 		std.stdio.write(" : ", msg);
