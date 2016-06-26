@@ -269,13 +269,11 @@ struct TFTLCD
 
 		tft_command_write(0x2C);
 
-		for(int y=0;y < width ;y++){
-			for(int x=0;x < height ;x++){
-				auto t = color;
+		ubyte hi = cast(ubyte) (color >> 8), lo = cast(ubyte) color;
 
-				tft_data_write(cast(ubyte) (t << 8));
-				tft_data_write(cast(ubyte) t);
-			}
+		for(int y=0; y<len ;y++){
+			tft_data_write(hi);
+			tft_data_write(lo);
 		}
 	}
 
