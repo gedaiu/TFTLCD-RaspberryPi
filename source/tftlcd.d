@@ -60,13 +60,28 @@ struct TFTLCD
 		writePin.value = true;
 		readPin.value = true;
 		chipSelectPin.value = false;
+		commandDataPin.value = false;
 		resetPin.value = false;
+
+		dataPins.value = 0;
 		log("reset");
 		Thread.sleep(120.msecs);
 		resetPin.value = true;
 
 		log("reset");
 		Thread.sleep(120.msecs);
+
+		writePin.value = false;
+		writePin.value = true;
+
+		writePin.value = false;
+		writePin.value = true;
+
+		writePin.value = false;
+		writePin.value = true;
+
+		writePin.value = false;
+		writePin.value = true;
 	}
 
 	void begin(int width, int height)
