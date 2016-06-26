@@ -55,32 +55,24 @@ struct TFTLCD
 	int width;
 	int height;
 
+	void hardReset() {
+		resetPin.value = false;
+		Thread.sleep(120.msecs);
+		resetPin.value = true;
+		Thread.sleep(120.msecs);
+	}
+
 	void begin(int width, int height)
 	{
-		//reset
-		chipSelectPin.value = true;
-		writePin.value = true;
-		readPin.value = true;
 
-		resetPin.value = false;
-		Thread.sleep(2.msecs);
-		resetPin.value = true;
-
-		chipSelectPin.value = false;
-		commandDataPin.value = false;
-		write(0x00);
-		write(0x00);
-		write(0x00);
-
-		chipSelectPin.value = true;
 		Thread.sleep(200.msecs);
 
 		//begin
-		chipSelectPin.value = false;
-
+/*
 		writeRegister(Registers.softReset, 0);
 		Thread.sleep(50.msecs);
 		writeRegister(Registers.displayOff, 0);
+		writeRegister(Registers.sleepOut, 0);
 
 		writeRegister(Registers.powerControl1, 0x23);
 		writeRegister(Registers.powerControl2, 0x10);
@@ -91,13 +83,76 @@ struct TFTLCD
 		writeRegister16(Registers.frameControl, 0x001B);
 
 		writeRegister(Registers.entryMode, 0x07);
-		writeRegister(Registers.sleepOut, 0);
 
 		Thread.sleep(150.msecs);
 		writeRegister(Registers.displayOn, 0);
 
 		Thread.sleep(500.msecs);
-		setAddrWindow(0, 0, width - 1, height - 1);
+		setAddrWindow(0, 0, width - 1, height - 1);*/
+
+		tft_command_write(0x28); //display OFF
+		tft_command_write(0x11); //exit SLEEP mode
+		tft_data_write(0x00);
+		tft_command_write(0xCB); //Power Control A
+		tft_data_write(0x39); //always 0x39
+		tft_data_write(0x2C); //always 0x2C
+		tft_data_write(0x00); //always 0x
+		tft_data_write(0x34); //Vcore = 1.6V
+		tft_data_write(0x02); //DDVDH = 5.6V
+		tft_command_write(0xCF); //Power Control B
+		tft_data_write(0x00); //always 0x
+		tft_data_write(0x81); //PCEQ off
+		tft_data_write(0x30); //ESD protection
+		tft_command_write(0xE8); //Driver timing control A
+		tft_data_write(0x85); //non‐overlap
+		tft_data_write(0x01); //EQ timing
+		tft_data_write(0x79); //Pre‐charge timing
+		tft_command_write(0xEA); //Driver timing control B
+		tft_data_write(0x00); //Gate driver timing
+		tft_data_write(0x00); //always 0x
+		tft_command_write(0xED); //Power‐On sequence control
+		tft_data_write(0x64); //soft start
+		tft_data_write(0x03); //power on sequence
+		tft_data_write(0x12); //power on sequence
+		tft_data_write(0x81); //DDVDH enhance on
+		tft_command_write(0xF7); //Pump ratio control
+		tft_data_write(0x20); //DDVDH=2xVCI
+		tft_command_write(0xC0); //power control 1
+		tft_data_write(0x26);
+		tft_data_write(0x04); //second parameter for ILI9340 (ignored by ILI9341)
+		tft_command_write(0xC1); //power control 2
+		tft_data_write(0x11);
+		tft_command_write(0xC5); //VCOM control 1
+		tft_data_write(0x35);
+		tft_data_write(0x3E);
+		tft_command_write(0xC7); //VCOM control 2
+		tft_data_write(0xBE);
+		tft_command_write(0x36); //memory access control = BGR
+		tft_data_write(0x88);
+		tft_command_write(0xB1); //frame rate control
+		tft_data_write(0x00);
+		tft_data_write(0x10);
+		tft_command_write(0xB6); //display function control
+		tft_data_write(0x0A);
+		tft_data_write(0xA2);
+		tft_command_write(0x3A); //pixel format = 16 bit per pixel
+		tft_data_write(0x55);
+		tft_command_write(0xF2); //3G Gamma control
+		tft_data_write(0x02); //off
+		tft_command_write(0x26); //Gamma curve 3
+		tft_data_write(0x01);
+		tft_command_write(0x2A); //column address set
+		tft_data_write(0x00);
+		tft_data_write(0x00); //start 0x00
+		tft_data_write(0x00);
+		tft_data_write(0xEF); //end 0xEF
+		tft_command_write(0x2B); //page address set
+		tft_data_write(0x00);
+		tft_data_write(0x00); //start 0x00
+		tft_data_write(0x01);
+		tft_data_write(0x3F); //end 0x013F
+
+		tft_command_write(0x29); //display ON
 
 		this.width = width;
 		this.height = height;
@@ -113,7 +168,6 @@ struct TFTLCD
 	{
 		immutable ubyte hi = cast(ubyte)(color >> 8), lo = cast(ubyte) color;
 
-		chipSelectPin.value = false;
 		commandDataPin.value = true;
 
 		write(Registers.memmoryWrite);
@@ -149,13 +203,10 @@ struct TFTLCD
 			write(hi);
 			write(lo);
 		}
-
-		chipSelectPin.value = true;
 	}
 
 	void setAddrWindow(uint x1, uint y1, uint x2, uint y2)
 	{
-		chipSelectPin.value = false;
 		uint value;
 
 		value = x1;
@@ -167,8 +218,6 @@ struct TFTLCD
 		value <<= 16;
 		value |= y2;
 		writeRegister32(Registers.pageAddressSet, value);
-
-		chipSelectPin.value = true;
 	}
 
 	void write(ubyte value)
@@ -191,6 +240,23 @@ struct TFTLCD
 
 		readPin.value = true;
 		return result;
+	}
+
+	void tft_command_write(ubyte command) {
+		commandDataPin.value = false;
+    write(command);
+	}
+
+	void tft_data_write(ubyte data)
+	{
+	    commandDataPin.value = true;
+	    write(data);
+	}
+
+	void writeRegister(ubyte command)
+	{
+		commandDataPin.value = false;
+		write(command);
 	}
 
 	void writeRegister(ubyte command, ubyte value)
@@ -221,8 +287,6 @@ struct TFTLCD
 
 	void writeRegister32(ubyte command, int value)
 	{
-		chipSelectPin.value = false;
-
 		commandDataPin.value = false;
 		write(command);
 
@@ -231,8 +295,6 @@ struct TFTLCD
 		write(cast(ubyte)(value >> 16));
 		write(cast(ubyte)(value >> 8));
 		write(cast(ubyte) value);
-
-		chipSelectPin.value = true;
 	}
 }
 
