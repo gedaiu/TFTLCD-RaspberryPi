@@ -283,7 +283,7 @@ struct TFTLCD
 	{
 		uint value;
 
-		/*value = x1;
+		value = x1;
 		value <<= 16;
 		value |= x2;
 		writeRegister32(Registers.columnAddressSet, value);
@@ -291,24 +291,7 @@ struct TFTLCD
 		value = y1;
 		value <<= 16;
 		value |= y2;
-		writeRegister32(Registers.pageAddressSet, value);*/
-
-		tft_command_write(0x2A);
-
-		tft_data_write(cast(ubyte) x1 >> 8);
-		tft_data_write(cast(ubyte) x1);
-
-		tft_data_write(cast(ubyte) x2 >> 8);
-		tft_data_write(cast(ubyte) x2);
-
-
-		tft_command_write(0x2B);
-
-		tft_data_write(cast(ubyte) y1 >> 8);
-		tft_data_write(cast(ubyte) y1);
-
-		tft_data_write(cast(ubyte)  (y2 >> 8));
-		tft_data_write(cast(ubyte) y2);
+		writeRegister32(Registers.pageAddressSet, value);
 	}
 
 	void write(ubyte value)
@@ -375,19 +358,17 @@ struct TFTLCD
 		write(hi);
 		write(lo);
 	}
-
+*/
 	void writeRegister32(ubyte command, int value)
 	{
-		commandDataPin.value = false;
-		write(command);
+		tft_command_write(command);
 
-		commandDataPin.value = true;
-		write(cast(ubyte)(value >> 24));
-		write(cast(ubyte)(value >> 16));
-		write(cast(ubyte)(value >> 8));
-		write(cast(ubyte) value);
+		tft_data_write(cast(ubyte)(value >> 24));
+		tft_data_write(cast(ubyte)(value >> 16));
+		tft_data_write(cast(ubyte)(value >> 8));
+		tft_data_write(cast(ubyte) value);
 	}
-*/
+
 	void log(string msg = "?") {
 		std.stdio.write("RD ");
 		readPin.log;
