@@ -99,7 +99,44 @@ struct TFTLCD
 		Thread.sleep(500.msecs);
 		setAddrWindow(0, 0, width - 1, height - 1);*/
 
+		tft_command_write(Registers.softReset);
+		Thread.sleep(50.msecs);
 		tft_command_write(0x28); //display OFF
+
+		tft_command_write(0xC0); //power control 1
+		tft_data_write(0x26);
+		tft_data_write(0x04); //second parameter for ILI9340 (ignored by ILI9341)
+		tft_command_write(0xC1); //power control 2
+		tft_data_write(0x11);
+
+		tft_command_write(0xC5); //VCOM control 1
+		tft_data_write(0x35);
+		tft_data_write(0x3E);
+		tft_command_write(0xC7); //VCOM control 2
+		tft_data_write(0xBE);
+
+		tft_command_write(0x36); //memory access control = BGR
+		tft_data_write(0x88);
+
+		tft_command_write(0x3A); //pixel format = 16 bit per pixel
+		tft_data_write(0x55);
+
+		tft_command_write(0xB1); //frame rate control
+		tft_data_write(0x00);
+		tft_data_write(0x1B);
+
+		tft_command_write(Registers.entryMode); //entry mode
+		tft_data_write(0x07);
+
+		tft_command_write(Registers.sleepOut);
+		Thread.sleep(150.msecs);
+
+		setAddrWindow(0, 0, width - 1, height - 1);
+
+		tft_command_write(Registers.displayOn);
+		Thread.sleep(500.msecs);
+
+/*
 		tft_command_write(0x11); //exit SLEEP mode
 		tft_data_write(0x00);
 		tft_command_write(0xCB); //Power Control A
@@ -162,7 +199,7 @@ struct TFTLCD
 		tft_data_write(0x3F); //end 0x013F
 
 		tft_command_write(0x29); //display ON
-
+*/
 		this.width = width;
 		this.height = height;
 	}
